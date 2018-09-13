@@ -1,5 +1,7 @@
 package ro.amihaescu.webserver;
 
+import ro.amihaescu.webserver.constans.StatusCode;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,7 +10,7 @@ import java.net.Socket;
 
 public class Connection implements Runnable {
 
-    private Socket socket = null;
+    private Socket socket;
 
     public Connection(Socket socket) {
         this.socket = socket;
@@ -18,14 +20,11 @@ public class Connection implements Runnable {
         try (InputStream inputStream = socket.getInputStream();
              OutputStream outputStream = socket.getOutputStream())
         {
+            HttpRequest httpRequest = HttpRequest.parseHttpRequest(inputStream);
+
             PrintWriter printWriter = new PrintWriter(outputStream);
-            String responseHeader =
-                    "HTTP/1.1 200 OK\r\n" +
-                            "Content-Type: text/html; charset=UTF-8\r\n" +
-                            "Content-Length: " + "Hello!".length() +
-                            "\r\n\r\n";
-            printWriter.write(responseHeader);
-            printWriter.write("Hello!");
+            HttpResponse httpResponse = new HttpResponse(StatusCode.OK).withHtmlBody("<p>Done</p>");
+            printWriter.write(httpResponse.toString());
             printWriter.flush();
 
         } catch (IOException e) {

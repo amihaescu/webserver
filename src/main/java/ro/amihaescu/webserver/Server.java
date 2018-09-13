@@ -1,5 +1,7 @@
 package ro.amihaescu.webserver;
 
+import org.springframework.http.HttpRequest;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,7 +19,7 @@ public class Server implements Runnable {
     }
 
     public void run() {
-        ServerSocket serverSocket = null;
+        ServerSocket serverSocket;
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
@@ -27,7 +29,7 @@ public class Server implements Runnable {
         }
 
         while (!Thread.interrupted()) {
-            Socket clientSocket = null;
+            Socket clientSocket;
             try {
                 clientSocket = serverSocket.accept();
             } catch (IOException e) {
