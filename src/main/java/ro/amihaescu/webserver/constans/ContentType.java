@@ -2,8 +2,9 @@ package ro.amihaescu.webserver.constans;
 
 public enum ContentType {
     TEXT("text/plain"),
-    HTML("text/html");
-
+    HTML("text/html"),
+    JS("application/js"),
+    CSS("text/css");
     private String text;
 
     ContentType(String text) {

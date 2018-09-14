@@ -3,6 +3,10 @@ package ro.amihaescu.webserver;
 import ro.amihaescu.webserver.constans.ContentType;
 import ro.amihaescu.webserver.constans.StatusCode;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,6 +21,34 @@ public class HttpResponse {
 
     public HttpResponse(StatusCode status) {
         this.status = status;
+    }
+
+    public HttpResponse withFile(File file) throws FileNotFoundException {
+        if (file.isFile()) {
+            try {
+                FileInputStream fileInputStream = new FileInputStream(file);
+                int length = fileInputStream.available();
+                body = new byte[length];
+                fileInputStream.read(body);
+                fileInputStream.close();
+
+                setContentLength(length);
+                if (file.getName().endsWith(".htm") || file.getName().endsWith(".html")) {
+                    setContentType(ContentType.HTML);
+                } else if (file.getName().endsWith(".js")) {
+                    setContentType(ContentType.JS);
+                } else if (file.getName().endsWith(".css")) {
+                    setContentType(ContentType.CSS);
+                }
+            } catch (FileNotFoundException e) {
+                throw e;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return this;
+        } else {
+            throw new FileNotFoundException(file.getName());
+        }
     }
 
     public HttpResponse withHtmlBody(String msg) {

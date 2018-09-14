@@ -1,5 +1,7 @@
 package ro.amihaescu.webserver;
 
+import ro.amihaescu.webserver.constans.HttpMethod;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,13 +13,33 @@ import java.util.Map;
 
 public class HttpRequest {
 
-    private String method;
+    private HttpMethod method;
     private String url;
     private String protocol;
     private Map<String, String> headers = new HashMap<>();
     private List<String> body = new ArrayList<>();
 
     private HttpRequest() {
+    }
+
+    public HttpMethod getMethod() {
+        return method;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public List<String> getBody() {
+        return body;
     }
 
     static HttpRequest parseHttpRequest(InputStream in) {
@@ -35,7 +57,7 @@ public class HttpRequest {
             if (!requestElements[2].startsWith("HTTP/")) {
                 throw  new IOException("Server only accepts HTTP requests");
             }
-            httpRequest.method = requestElements[0];
+            httpRequest.method = HttpMethod.valueOf(requestElements[0]);
             httpRequest.url = requestElements[1];
             httpRequest.protocol = requestElements[2];
 
@@ -61,6 +83,7 @@ public class HttpRequest {
             e.printStackTrace();
             return null;
         }
+
 
 
     }

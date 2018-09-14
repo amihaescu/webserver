@@ -12,10 +12,12 @@ public class Server implements Runnable {
 
     private Integer port;
     private ExecutorService executorService;
+    private String webRoot;
 
-    Server(Integer port, Integer maxThreads) {
+    Server(Integer port, Integer maxThreads, String webRoot) {
         this.port = port;
         this.executorService = Executors.newFixedThreadPool(maxThreads);
+        this.webRoot = webRoot;
     }
 
     public void run() {
@@ -36,7 +38,7 @@ public class Server implements Runnable {
                 e.printStackTrace();
                 return;
             }
-            executorService.execute(new Connection(clientSocket));
+            executorService.execute(new Connection(clientSocket, this));
         }
 
         try {
@@ -47,5 +49,7 @@ public class Server implements Runnable {
         }
     }
 
-
+    public String getWebRoot() {
+        return webRoot;
+    }
 }
