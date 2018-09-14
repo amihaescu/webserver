@@ -1,4 +1,4 @@
-package ro.amihaescu.webserver;
+package ro.amihaescu.webserver.dto;
 
 import ro.amihaescu.webserver.constans.ContentType;
 import ro.amihaescu.webserver.constans.StatusCode;
@@ -56,6 +56,12 @@ public class HttpResponse {
         setContentType(ContentType.HTML);
         body = msg.getBytes();
         return this;
+    }
+
+    public void setConnectionKeepAlive(boolean b){
+        if (b) {
+            headers.put("Connection", "keep-Alive");
+        }
     }
 
     public void setDate(Date date) {
