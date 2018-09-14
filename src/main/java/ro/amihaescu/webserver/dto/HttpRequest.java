@@ -1,4 +1,4 @@
-package ro.amihaescu.webserver.dto;
+package ro.amihaescu.webserver;
 
 import ro.amihaescu.webserver.constans.HttpMethod;
 
@@ -42,7 +42,7 @@ public class HttpRequest {
         return body;
     }
 
-    public static HttpRequest parseHttpRequest(InputStream in) {
+    static HttpRequest parseHttpRequest(InputStream in) {
         HttpRequest httpRequest = new HttpRequest();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
         try {

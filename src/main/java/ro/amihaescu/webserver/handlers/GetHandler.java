@@ -1,7 +1,7 @@
 package ro.amihaescu.webserver.handlers;
 
-import ro.amihaescu.webserver.dto.HttpRequest;
-import ro.amihaescu.webserver.dto.HttpResponse;
+import ro.amihaescu.webserver.HttpRequest;
+import ro.amihaescu.webserver.HttpResponse;
 import ro.amihaescu.webserver.Server;
 import ro.amihaescu.webserver.constans.StatusCode;
 
