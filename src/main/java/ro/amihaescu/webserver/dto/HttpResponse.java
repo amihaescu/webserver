@@ -61,6 +61,8 @@ public class HttpResponse {
     public void setConnectionKeepAlive(boolean b){
         if (b) {
             headers.put("Connection", "keep-Alive");
+        } else {
+            headers.put("Connection", "close");
         }
     }
 
