@@ -34,12 +34,12 @@ public class Server implements Runnable {
         while (!Thread.interrupted()) {
             Socket clientSocket;
             try {
-                System.out.printf("%s - %s - Accepting connection \n" ,Thread.currentThread(), new Date());
                 clientSocket = serverSocket.accept();
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
             }
+            System.out.printf("%s - %s - Accepting connection \n" ,Thread.currentThread(), new Date());
             executorService.execute(new Connection(clientSocket, this,
                     System.currentTimeMillis() + connectionKeepAliveTime));
         }

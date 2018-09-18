@@ -9,9 +9,7 @@ import ro.amihaescu.webserver.handlers.GetHandler;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static ro.amihaescu.webserver.constans.HttpMethod.GET;
 
@@ -22,6 +20,7 @@ public class Connection implements Runnable {
     private Long connectionKeepAliveTime;
     private Boolean connectionKeepAlive = false;
     private static Map<HttpMethod, GenericHandler> handlers;
+    private Timer timer;
 
     static {
         handlers = new HashMap<>();
@@ -32,6 +31,7 @@ public class Connection implements Runnable {
         this.socket = socket;
         this.server = server;
         this.connectionKeepAliveTime = connectionKeepAliveTime;
+        this.timer = new Timer();
     }
 
     public void run() {
