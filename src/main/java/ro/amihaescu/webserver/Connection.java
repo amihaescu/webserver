@@ -37,35 +37,12 @@ public class Connection implements Runnable {
     public void run() {
         try (InputStream inputStream = socket.getInputStream();
              OutputStream outputStream = socket.getOutputStream()) {
-            Long currentTime = System.currentTimeMillis();
-            HttpResponse httpResponse = new HttpResponse(OK);
-            while (System.currentTimeMillis() < currentTime + 10_000) {
-                HttpRequest httpRequest = HttpRequest.parseHttpRequest(inputStream);
-                Map<String, String> headers = httpRequest.getHeaders();
+            HttpRequest httpRequest = HttpRequest.parseHttpRequest(inputStream);
 
-                System.out.println(String.format("%s - %s - Handling request for %s", Thread.currentThread().getName(), new Date(), httpRequest.getUrl()));
+            System.out.println(String.format("%s - %s - Handling request for %s", Thread.currentThread().getName(), new Date(), httpRequest.getUrl()));
+            GenericHandler genericHandler = handlers.get(httpRequest.getMethod());
+            HttpResponse httpResponse = genericHandler.handle(httpRequest, server);
 
-                GenericHandler genericHandler = handlers.get(httpRequest.getMethod());
-                httpResponse = genericHandler.handle(httpRequest, server);
-
-                if (headers.containsKey("Connection")) {
-                    if ("keep-alive".equalsIgnoreCase(headers.get("Connection"))) {
-                        httpResponse.setConnectionKeepAlive(true);
-                        PrintWriter printWriter = new PrintWriter(outputStream);
-                        printWriter.write(httpResponse.toString());
-                        printWriter.flush();
-                    }
-                    else
-                    {
-                        httpResponse.setConnectionKeepAlive(false);
-                        PrintWriter printWriter = new PrintWriter(outputStream);
-                        printWriter.write(httpResponse.toString());
-                        printWriter.flush();
-                        break;
-                    }
-                }
-            }
-            httpResponse.setConnectionKeepAlive(false);
             PrintWriter printWriter = new PrintWriter(outputStream);
             printWriter.write(httpResponse.toString());
             printWriter.flush();
