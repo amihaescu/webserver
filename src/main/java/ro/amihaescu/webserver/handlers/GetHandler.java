@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 public class GetHandler implements GenericHandler {
@@ -19,6 +20,8 @@ public class GetHandler implements GenericHandler {
         HttpResponse httpResponse;
         String uri = request.getUrl();
         File f = new File(String.format("%s%s", server.getWebRoot(), uri));
+
+        System.out.printf("%s - %s - Handling request for %s \n", Thread.currentThread(), new Date(), uri);
         try {
             httpResponse = new HttpResponse(StatusCode.OK).withFile(f);
         } catch (FileNotFoundException e) {
