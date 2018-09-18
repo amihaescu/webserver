@@ -9,6 +9,7 @@ import ro.amihaescu.webserver.handlers.GetHandler;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ public class Connection implements Runnable {
 
     private Socket socket;
     private Server server;
+    private Long connectionKeepAliveTime;
+    private Boolean connectionKeepAlive = false;
     private static Map<HttpMethod, GenericHandler> handlers;
 
     static {
@@ -25,24 +28,44 @@ public class Connection implements Runnable {
         handlers.put(GET, new GetHandler());
     }
 
-    public Connection(Socket socket, Server server) {
+    public Connection(Socket socket, Server server, Long connectionKeepAliveTime) {
         this.socket = socket;
         this.server = server;
+        this.connectionKeepAliveTime = connectionKeepAliveTime;
     }
 
     public void run() {
         try (InputStream inputStream = socket.getInputStream();
              OutputStream outputStream = socket.getOutputStream()) {
-            HttpRequest httpRequest = HttpRequest.parseHttpRequest(inputStream);
+            do {
+                HttpRequest httpRequest = HttpRequest.parseHttpRequest(inputStream);
+                Map<String, String> headers = httpRequest.getHeaders();
 
-            GenericHandler genericHandler = handlers.get(httpRequest.getMethod());
-            HttpResponse httpResponse = genericHandler.handle(httpRequest, server);
+                System.out.printf("%s - %s - Handling request for %s \n", Thread.currentThread().getName(), new Date(), httpRequest.getUrl());
 
-            PrintWriter printWriter = new PrintWriter(outputStream);
-            printWriter.write(httpResponse.toString());
-            printWriter.flush();
+                GenericHandler genericHandler = handlers.get(httpRequest.getMethod());
+                HttpResponse httpResponse = genericHandler.handle(httpRequest, server);
+                setConnectionKeepAlive(headers, httpResponse);
+
+                PrintWriter printWriter = new PrintWriter(outputStream);
+                printWriter.write(httpResponse.toString());
+                printWriter.flush();
+            } while (connectionKeepAlive && System.currentTimeMillis() < connectionKeepAliveTime);
+            System.out.printf("%s - %s - closed connection \n", Thread.currentThread(), new Date());
+            connectionKeepAlive = false;
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setConnectionKeepAlive(Map<String, String> headers, HttpResponse httpResponse) {
+        if (headers.containsKey("Connection") &&
+                "keep-alive".equalsIgnoreCase(headers.get("Connection"))) {
+            connectionKeepAlive = true;
+            httpResponse.setConnectionKeepAlive(true);
+        } else {
+            httpResponse.setConnectionKeepAlive(false);
+            connectionKeepAlive = false;
         }
     }
 

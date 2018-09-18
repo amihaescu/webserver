@@ -33,12 +33,15 @@ public class HttpResponse {
                 fileInputStream.close();
 
                 setContentLength(length);
+
                 if (file.getName().endsWith(".htm") || file.getName().endsWith(".html")) {
                     setContentType(ContentType.HTML);
                 } else if (file.getName().endsWith(".js")) {
                     setContentType(ContentType.JS);
                 } else if (file.getName().endsWith(".css")) {
                     setContentType(ContentType.CSS);
+                } else {
+                    setContentType(ContentType.TEXT);
                 }
             } catch (FileNotFoundException e) {
                 throw e;
@@ -60,7 +63,7 @@ public class HttpResponse {
 
     public void setConnectionKeepAlive(boolean b){
         if (b) {
-            headers.put("Connection", "keep-Alive");
+            headers.put("Connection", "keep-alive");
         } else {
             headers.put("Connection", "close");
         }

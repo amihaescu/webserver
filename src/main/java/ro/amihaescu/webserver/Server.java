@@ -1,10 +1,9 @@
 package ro.amihaescu.webserver;
 
-import org.springframework.http.HttpRequest;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -13,11 +12,13 @@ public class Server implements Runnable {
     private Integer port;
     private ExecutorService executorService;
     private String webRoot;
+    private Long connectionKeepAliveTime;
 
-    Server(Integer port, Integer maxThreads, String webRoot) {
+    Server(Integer port, Integer maxThreads, String webRoot, Long connectionKeepAliveTime) {
         this.port = port;
         this.executorService = Executors.newFixedThreadPool(maxThreads);
         this.webRoot = webRoot;
+        this.connectionKeepAliveTime = connectionKeepAliveTime;
     }
 
     public void run() {
@@ -25,7 +26,7 @@ public class Server implements Runnable {
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            System.err.println("Unable to start server");
+            System.err.printf("%s - Unable to start server\n", new Date());
             e.printStackTrace();
             return;
         }
@@ -33,18 +34,20 @@ public class Server implements Runnable {
         while (!Thread.interrupted()) {
             Socket clientSocket;
             try {
+                System.out.printf("%s - %s - Accepting connection \n" ,Thread.currentThread(), new Date());
                 clientSocket = serverSocket.accept();
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
             }
-            executorService.execute(new Connection(clientSocket, this));
+            executorService.execute(new Connection(clientSocket, this,
+                    System.currentTimeMillis() + connectionKeepAliveTime));
         }
 
         try {
             serverSocket.close();
         } catch (IOException e) {
-            System.err.println("Unable to stop server");
+            System.err.printf("%s - Unable to stop server", new Date());
             e.printStackTrace();
         }
     }

@@ -28,7 +28,7 @@ public class Main {
             defaultInit();
         }
 
-        Thread thread = new Thread(new Server(serverPort, noThreads, webRoot));
+        Thread thread = new Thread(new Server(8080, 3, "www", 10_000L));
         thread.start();
         System.out.printf("%s - Server will run on port %s; \n" , new Date(), serverPort);
         System.out.printf("%s - Number of threads  %s; \n" , new Date(), noThreads);
