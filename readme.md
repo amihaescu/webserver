@@ -15,3 +15,4 @@ the default values will be used
 - number of threads: 3 
 - web root: www 
 
+This repository also contains a branch with support for keep alive connections.
