@@ -8,10 +8,7 @@ import ro.amihaescu.webserver.endpoints.MockEndPoint;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -36,19 +33,6 @@ public class Main {
             }
         } catch (NumberFormatException e) {
             defaultInit();
-        }
-
-        Reflections reflections = new Reflections("ro.amihaescu.webserver.endpoints");
-        Set<Class<?>> modules = reflections.getTypesAnnotatedWith(RestController.class);
-
-        for (Class<?> classItt : modules) {
-            List<Method> methodList = Arrays.stream(classItt.getMethods())
-                    .filter(method -> method.isAnnotationPresent(EndPoint.class))
-                    .collect(Collectors.toList());
-            for (Method method : methodList) {
-                EndPoint endPoint = method.getAnnotation(EndPoint.class);
-                HttpMethod httpMethod = endPoint.method();
-            }
         }
 
         Thread thread = new Thread(new Server(serverPort, noThreads, webRoot));
