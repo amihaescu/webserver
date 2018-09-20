@@ -1,11 +1,16 @@
 package ro.amihaescu.webserver;
 
+import lombok.Getter;
 import org.reflections.Reflections;
+import ro.amihaescu.webserver.handlers.DynamicHandler;
+import ro.amihaescu.webserver.handlers.GenericHandler;
+import ro.amihaescu.webserver.handlers.StaticHandler;
 import ro.amihaescu.webserver.web.Connection;
 import ro.amihaescu.webserver.annotations.EndPoint;
 import ro.amihaescu.webserver.annotations.RestController;
 import ro.amihaescu.webserver.constants.HttpMethod;
 import ro.amihaescu.webserver.web.MethodPath;
+import ro.amihaescu.webserver.web.ObjectMethod;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -21,7 +26,10 @@ public class Server implements Runnable {
     private Integer port;
     private ExecutorService executorService;
     private String webRoot;
-    private Map<MethodPath, Method> mappings;
+    @Getter
+    private Map<MethodPath, ObjectMethod> mappings;
+    @Getter
+    private Map<String, GenericHandler> handlers;
 
     Server(Integer port, Integer maxThreads, String webRoot) {
         this.port = port;
@@ -29,6 +37,13 @@ public class Server implements Runnable {
         this.webRoot = webRoot;
         this.mappings = new HashMap<>();
         initContext();
+        initHandlers();
+    }
+
+    private void initHandlers() {
+        handlers = new HashMap<>();
+        handlers.put("static", new StaticHandler());
+        handlers.put("dyanmic", new DynamicHandler());
     }
 
     public void run() {
@@ -65,7 +80,6 @@ public class Server implements Runnable {
     }
 
 
-
     public void initContext() {
         Reflections reflections = new Reflections("ro.amihaescu.webserver.endpoints");
         Set<Class<?>> modules = reflections.getTypesAnnotatedWith(RestController.class);
@@ -74,12 +88,22 @@ public class Server implements Runnable {
             List<Method> methodList = Arrays.stream(classItt.getMethods())
                     .filter(method -> method.isAnnotationPresent(EndPoint.class))
                     .collect(Collectors.toList());
+            Object c = null;
+            try {
+                 c = classItt.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
             for (Method method : methodList) {
                 EndPoint endPoint = method.getAnnotation(EndPoint.class);
                 HttpMethod httpMethod = endPoint.method();
                 String path = endPoint.path();
-                mappings.put(new MethodPath(httpMethod, path), method);
+                mappings.put(new MethodPath(httpMethod, path), new ObjectMethod(c, method));
             }
         }
     }
+
+
 }

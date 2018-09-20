@@ -1,15 +1,6 @@
 package ro.amihaescu.webserver;
 
-import org.reflections.Reflections;
-import ro.amihaescu.webserver.annotations.EndPoint;
-import ro.amihaescu.webserver.annotations.RestController;
-import ro.amihaescu.webserver.constants.HttpMethod;
-import ro.amihaescu.webserver.endpoints.MockEndPoint;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Main {
 

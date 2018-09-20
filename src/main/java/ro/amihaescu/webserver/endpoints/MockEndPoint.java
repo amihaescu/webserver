@@ -1,11 +1,15 @@
 package ro.amihaescu.webserver.endpoints;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import ro.amihaescu.webserver.annotations.EndPoint;
 import ro.amihaescu.webserver.annotations.RestController;
 import ro.amihaescu.webserver.constants.HttpMethod;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class MockEndPoint {
@@ -17,5 +21,13 @@ public class MockEndPoint {
                 "Second Element",
                 "Third Element"
         );
+    }
+
+    @EndPoint(method = HttpMethod.GET, path = "/otherData")
+    public Map<String, String> getSomeOtherData(){
+        return ImmutableMap.<String,String> builder()
+                .put("Key 1", "Value 1")
+                .put("Key 2", "Value 2")
+                .build();
     }
 }

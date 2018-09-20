@@ -11,22 +11,11 @@ import ro.amihaescu.webserver.handlers.StaticHandler;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
-
-import static ro.amihaescu.webserver.constants.HttpMethod.GET;
 
 public class Connection implements Runnable {
 
     private Socket socket;
     private Server server;
-    private static Map<String, GenericHandler> handlers;
-
-    static {
-        handlers = new HashMap<>();
-        handlers.put("static", new StaticHandler());
-        handlers.put("dyanmic", new DynamicHandler());
-    }
 
     public Connection(Socket socket, Server server) {
         this.socket = socket;
@@ -38,7 +27,8 @@ public class Connection implements Runnable {
              OutputStream outputStream = socket.getOutputStream()) {
             HttpRequest httpRequest = HttpRequest.parseHttpRequest(inputStream);
 
-            GenericHandler genericHandler = handlers.get(httpRequest.getUrl().contains(".") ? "static" : "dyanmic");
+            String key = httpRequest.getUrl().contains(".") ? "static" : "dyanmic";
+            GenericHandler genericHandler = server.getHandlers().get(key);
             HttpResponse httpResponse = genericHandler.handle(httpRequest, server);
 
             PrintWriter printWriter = new PrintWriter(outputStream);
