@@ -3,7 +3,7 @@ package ro.amihaescu.webserver.handlers;
 
 import ro.amihaescu.webserver.dto.HttpRequest;
 import ro.amihaescu.webserver.Server;
-import ro.amihaescu.webserver.constans.StatusCode;
+import ro.amihaescu.webserver.constants.StatusCode;
 import ro.amihaescu.webserver.dto.HttpResponse;
 
 import java.io.BufferedReader;

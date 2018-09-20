@@ -1,6 +1,6 @@
 package ro.amihaescu.webserver.dto;
 
-import ro.amihaescu.webserver.constans.HttpMethod;
+import ro.amihaescu.webserver.constants.HttpMethod;
 
 import java.io.BufferedReader;
 import java.io.IOException;

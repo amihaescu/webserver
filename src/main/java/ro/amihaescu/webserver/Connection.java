@@ -1,7 +1,7 @@
 package ro.amihaescu.webserver;
 
 
-import ro.amihaescu.webserver.constans.HttpMethod;
+import ro.amihaescu.webserver.constants.HttpMethod;
 import ro.amihaescu.webserver.dto.HttpResponse;
 import ro.amihaescu.webserver.dto.HttpRequest;
 import ro.amihaescu.webserver.handlers.GenericHandler;
@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ro.amihaescu.webserver.constans.HttpMethod.GET;
+import static ro.amihaescu.webserver.constants.HttpMethod.GET;
 
 public class Connection implements Runnable {
 
