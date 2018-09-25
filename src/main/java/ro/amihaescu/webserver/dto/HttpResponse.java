@@ -1,7 +1,7 @@
 package ro.amihaescu.webserver.dto;
 
-import ro.amihaescu.webserver.constans.ContentType;
-import ro.amihaescu.webserver.constans.StatusCode;
+import ro.amihaescu.webserver.constants.ContentType;
+import ro.amihaescu.webserver.constants.StatusCode;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,6 +58,13 @@ public class HttpResponse {
         return this;
     }
 
+    public HttpResponse withJsonResponse(String value) {
+        setContentLength(value.length());
+        setContentType(ContentType.JSON);
+        body = value.getBytes();
+        return this;
+    }
+
     public void setConnectionKeepAlive(boolean b){
         if (b) {
             headers.put("Connection", "keep-Alive");
@@ -76,6 +83,11 @@ public class HttpResponse {
 
     public void setContentType(ContentType value) {
         headers.put("Content-Type", value);
+    }
+
+    public HttpResponse withContentType(ContentType value) {
+        headers.put("Content-Type", value);
+        return this;
     }
 
     public void removeBody(){

@@ -1,6 +1,7 @@
-package ro.amihaescu.webserver.constans;
+package ro.amihaescu.webserver.constants;
 
 public enum ContentType {
+    JSON("application/json"),
     TEXT("text/plain"),
     HTML("text/html"),
     JS("application/js"),

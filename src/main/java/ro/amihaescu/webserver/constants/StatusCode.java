@@ -1,4 +1,4 @@
-package ro.amihaescu.webserver.constans;
+package ro.amihaescu.webserver.constants;
 
 public enum StatusCode {
     OK(200, "OK"),

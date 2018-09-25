@@ -1,6 +1,6 @@
 package ro.amihaescu.webserver;
 
-import java.util.Date;
+import java.util.*;
 
 public class Main {
 
@@ -14,7 +14,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-
         try {
             if (args.length == 3) {
                 serverPort = Integer.valueOf(args[0]);
@@ -24,19 +23,16 @@ public class Main {
                 defaultInit();
             }
         } catch (NumberFormatException e) {
-
             defaultInit();
         }
 
         Thread thread = new Thread(new Server(serverPort, noThreads, webRoot));
         thread.start();
-        System.out.printf("%s - Server will run on port %s; \n" , new Date(), serverPort);
-        System.out.printf("%s - Number of threads  %s; \n" , new Date(), noThreads);
-        System.out.printf("%s - The web root for the server is %s; \n" , new Date(), webRoot);
+        System.out.printf("%s - Server will run on port %s; \n", new Date(), serverPort);
+        System.out.printf("%s - Number of threads  %s; \n", new Date(), noThreads);
+        System.out.printf("%s - The web root for the server is %s; \n", new Date(), webRoot);
 
         System.out.printf("%s - Started server \n", new Date());
-
-
     }
 
     private static void defaultInit() {
