@@ -80,7 +80,7 @@ public class Server implements Runnable {
     }
 
 
-    public void initContext() {
+    private void initContext() {
         Reflections reflections = new Reflections("ro.amihaescu.webserver.endpoints");
         Set<Class<?>> modules = reflections.getTypesAnnotatedWith(RestController.class);
 
